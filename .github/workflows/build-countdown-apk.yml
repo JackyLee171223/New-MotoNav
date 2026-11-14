@@ -1,12 +1,12 @@
-name: Build MotoNav Countdown APK
+name: Build MotoNav Standard APK
 
 on:
   workflow_dispatch:
 
 jobs:
-  build-countdown:
-    runs-on: windows-latest
-    timeout-minutes: 40
+  build-standard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: Checkout
@@ -29,21 +29,13 @@ jobs:
         with:
           gradle-version: '8.10.2'
 
-      # 读秒版完整构建依赖 provider.apk
-      # 如果仓库 Releases 里没有对应文件，这一行会失败，届时需改用“仅 assembleDebug”的简化构建
-      - name: Download provider.apk
-        shell: pwsh
-        run: |
-          $url = "https://github.com/Koo0527/New-MotoNav/releases/latest/download/provider.apk"
-          Invoke-WebRequest -Uri $url -OutFile "android/countdown/provider.apk"
-
-      - name: Build Countdown Debug APK
-        working-directory: android/countdown
+      - name: Build Standard Debug APK
+        working-directory: android/standard
         run: gradle --no-daemon assembleDebug
 
-      - name: Upload Countdown APK
+      - name: Upload Standard APK
         uses: actions/upload-artifact@v4
         with:
-          name: MotoNav-Countdown-APK
-          path: android/countdown/**/build/outputs/apk/**/*.apk
+          name: MotoNav-Standard-APK
+          path: android/standard/**/build/outputs/apk/**/*.apk
           retention-days: 7
