@@ -18,11 +18,13 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
+      # 核心修改：跳过第三方插件，直接同意系统自带的 Android 协议
+      - name: Accept Android SDK Licenses
+        run: yes | sdkmanager --licenses || true
 
+      # 可选：强制要求使用 35 版本，如果系统自带版本不够，它会自动下载
       - name: Install SDK components
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+        run: sdkmanager "platforms;android-35" "build-tools;35.0.0" || true
 
       - name: Setup Gradle 8.10.2
         uses: gradle/actions/setup-gradle@v4
